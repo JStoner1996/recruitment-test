@@ -2,19 +2,27 @@ import { useEffect, useState } from "react";
 import "./Styling/Employees.css";
 
 function App() {
-    const [employeeCount, setEmployeeCount] = useState<number>(0);
+  const [employeeCount, setEmployeeCount] = useState<number>(0);
   const [employees, setEmployees] = useState<Employee[]>();
 
-    useEffect(() => {
-        checkConnectivity();
-    }, []);
+  useEffect(() => {
+    checkConnectivity();
+  }, []);
 
-    async function checkConnectivity() {
+  async function checkConnectivity() {
     const response = await fetch("api/employees");
-        const data = await response.json();
+    const data = await response.json();
     setEmployees(data);
-        setEmployeeCount(data.length);
-    }
+    setEmployeeCount(data.length);
+  }
+
+  const updateEmployees = async () => {
+    await fetch("api/employees/update-values", { method: "POST" });
+
+    const response = await fetch("api/employees");
+    const data = await response.json();
+    setEmployees(data);
+  };
 
   if (!employees || employees.length === 0) {
     return <div>No Employees Found.</div>;
@@ -46,7 +54,7 @@ function App() {
           </tbody>
         </table>
       </div>
-      <button>Increment</button>
+      <button onClick={updateEmployees}>Increment</button>
     </>
   );
 }

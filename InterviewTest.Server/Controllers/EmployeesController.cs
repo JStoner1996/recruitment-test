@@ -35,5 +35,26 @@ namespace InterviewTest.Server.Controllers
 
             return employees;
         }
+
+        [HttpPost("update-values")]
+        public IActionResult UpdateEmployeeValues()
+        {
+            var connectionStringBuilder = new SqliteConnectionStringBuilder() { DataSource = "./SqliteDB.db" };
+            using (var connection = new SqliteConnection(connectionStringBuilder.ConnectionString))
+            {
+                connection.Open();
+
+                var updateCmd = connection.CreateCommand();
+                updateCmd.CommandText = @"
+                UPDATE Employees
+                SET Value = CASE
+                    WHEN Name LIKE 'E%' THEN Value + 1
+                    WHEN Name LIKE 'G%' THEN Value + 10
+                    ELSE Value + 100
+                END";
+                updateCmd.ExecuteNonQuery();
+            }
+                return Ok();
+        }
     }
 }
