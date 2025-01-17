@@ -1,0 +1,25 @@
+.table-container {
+  max-height: 40vh !important;
+  overflow-y: auto;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+th,
+td {
+  padding: 8px;
+  border: 1px solid #ddd;
+  text-align: left;
+}
+
+th {
+  background-color: #f4f4f4;
+  position: sticky;
+  top: 0;
+}
+
+thead {
+}
