@@ -3,7 +3,10 @@ import "./Styling/Employees.css";
 
 function App() {
   const [employeeCount, setEmployeeCount] = useState<number>(0);
-  const [employees, setEmployees] = useState<Employee[]>();
+  const [employees, setEmployees] = useState<Employee[]>([]);
+  const [sum, setSum] = useState<number>(0);
+
+  const minimumSumValue = 11171;
 
   useEffect(() => {
     checkConnectivity();
@@ -20,21 +23,30 @@ function App() {
     await fetch("api/employees/update-values", { method: "POST" });
 
     const response = await fetch("api/employees");
+    const sumResponse = await fetch("api/employees/get-sum", {
+      method: "GET",
+    });
+
     const data = await response.json();
+    const sumData = await sumResponse.json();
+
     setEmployees(data);
+    setSum(sumData);
   };
 
   if (!employees || employees.length === 0) {
     return <div>No Employees Found.</div>;
   }
+
   return (
     <>
-      <div>
-        Connectivity check:{" "}
-        {employeeCount > 0 ? `OK (${employeeCount})` : `NOT READY`}
-      </div>
-
-      <div>Complete your app here</div>
+      <h1>{employeeCount} Employees</h1>
+      {sum >= minimumSumValue && (
+        <h1>
+          {sum} is the sum of all Employee values whose name start with either
+          A, B or C
+        </h1>
+      )}
 
       <div className="table-container">
         <table>

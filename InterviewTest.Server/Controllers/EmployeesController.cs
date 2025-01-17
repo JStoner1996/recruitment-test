@@ -56,5 +56,29 @@ namespace InterviewTest.Server.Controllers
             }
                 return Ok();
         }
+
+        [HttpGet("get-sum")]
+        public int GetEmployeesSum()
+        {
+            int sum = 0;
+
+            var connectionStringBuilder = new SqliteConnectionStringBuilder() { DataSource = "./SqliteDB.db" };
+            using (var connection = new SqliteConnection(connectionStringBuilder.ConnectionString))
+            {
+                connection.Open();
+
+                var sumCmd = connection.CreateCommand();
+                sumCmd.CommandText = @"
+                SELECT SUM(Value)
+                FROM Employees
+                    WHERE Name LIKE 'A%' 
+                    OR Name LIKE 'B%' 
+                    OR Name LIKE 'C%'";
+
+              var result = sumCmd.ExecuteScalar();             
+              sum = result != DBNull.Value ? Convert.ToInt32(result) : 0;
+            }
+            return sum;
+        }
     }
 }
