@@ -35,7 +35,6 @@ function App() {
   // Added decrease to make testing the conditional rendering easier
   const decreaseEmployeesValues = async () => {
     await fetch("api/employees/decrease-values", { method: "POST" });
-
     updateEmployeeData();
   };
 
