@@ -19,18 +19,31 @@ function App() {
     setEmployeeCount(data.length);
   }
 
-  const updateEmployees = async () => {
-    await fetch("api/employees/update-values", { method: "POST" });
-
+  const updateEmployeeData = async () => {
     const response = await fetch("api/employees");
+    const data = await response.json();
+
+    setEmployees(data);
+    getEmployeeSum();
+  };
+
+  const increaseEmployeesValues = async () => {
+    await fetch("api/employees/increase-values", { method: "POST" });
+    updateEmployeeData();
+  };
+
+  // Added decrease to make testing the conditional rendering easier
+  const decreaseEmployeesValues = async () => {
+    await fetch("api/employees/decrease-values", { method: "POST" });
+
+    updateEmployeeData();
+  };
+
+  const getEmployeeSum = async () => {
     const sumResponse = await fetch("api/employees/get-sum", {
       method: "GET",
     });
-
-    const data = await response.json();
     const sumData = await sumResponse.json();
-
-    setEmployees(data);
     setSum(sumData);
   };
 
@@ -41,10 +54,15 @@ function App() {
   return (
     <>
       <h1>{employeeCount} Employees</h1>
-      {sum >= minimumSumValue && (
+      {sum >= minimumSumValue ? (
         <h1>
           {sum} is the sum of all Employee values whose name start with either
           A, B or C
+        </h1>
+      ) : (
+        <h1>
+          The sum of all Employee values whose name start with either A, B or C
+          is less than {minimumSumValue}
         </h1>
       )}
 
@@ -66,7 +84,8 @@ function App() {
           </tbody>
         </table>
       </div>
-      <button onClick={updateEmployees}>Increment</button>
+      <button onClick={increaseEmployeesValues}>Increment</button>
+      <button onClick={decreaseEmployeesValues}>Decrement</button>
     </>
   );
 }

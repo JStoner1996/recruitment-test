@@ -36,25 +36,45 @@ namespace InterviewTest.Server.Controllers
             return employees;
         }
 
-        [HttpPost("update-values")]
-        public IActionResult UpdateEmployeeValues()
+        [HttpPost("increase-values")]
+        public IActionResult IncreaseEmployeeValues()
         {
             var connectionStringBuilder = new SqliteConnectionStringBuilder() { DataSource = "./SqliteDB.db" };
             using (var connection = new SqliteConnection(connectionStringBuilder.ConnectionString))
             {
                 connection.Open();
 
-                var updateCmd = connection.CreateCommand();
-                updateCmd.CommandText = @"
+                var increaseCMD = connection.CreateCommand();
+                increaseCMD.CommandText = @"
                 UPDATE Employees
                 SET Value = CASE
                     WHEN Name LIKE 'E%' THEN Value + 1
                     WHEN Name LIKE 'G%' THEN Value + 10
                     ELSE Value + 100
                 END";
-                updateCmd.ExecuteNonQuery();
+                increaseCMD.ExecuteNonQuery();
             }
                 return Ok();
+        }
+
+        // Added to make testing the conditional render easier
+        [HttpPost("decrease-values")]
+        public IActionResult DecreaseEmployeeValues()
+        {
+            var connectionStringBuilder = new SqliteConnectionStringBuilder() { DataSource = "./SqliteDB.db" };
+            using (var connection = new SqliteConnection(connectionStringBuilder.ConnectionString))
+            {
+                connection.Open();
+
+                var decreaseCmd = connection.CreateCommand();
+                decreaseCmd.CommandText = @"
+                UPDATE Employees
+                SET Value = CASE
+                    WHEN Name LIKE 'A%' OR Name LIKE 'B%' Or Name LIKE 'C%' THEN Value - 100 ELSE Value
+                END";
+                decreaseCmd.ExecuteNonQuery();
+            }
+            return Ok();
         }
 
         [HttpGet("get-sum")]
